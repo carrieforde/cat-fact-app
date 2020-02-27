@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import 'cat-fact-component';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      content: ''
+    };
+  }
+
+  componentDidMount() {
+    fetch(
+      'https://cat-fact-wp.carrieforde.co/wp-json/wp/v2/posts?slug=hello-world'
+    )
+      .then(res => res.json())
+      .then(response => {
+        console.log(response);
+        this.setState({ content: response[0].content.rendered });
+      });
+  }
+
+  render() {
+    const { content } = this.state;
+    return (
+      <>
+        <h1>Cat Facts</h1>
+        {content && <div dangerouslySetInnerHTML={{ __html: content }} />}
+      </>
+    );
+  }
 }
 
 export default App;
